@@ -1,45 +1,42 @@
 pipeline {
-agent any
+    agent any
 
-```
-tools {
-    maven 'Maven'
-}
+    tools {
+        maven 'Maven'
+    }
 
-stages {
-    stage('Checkout') {
-        steps {
-            git 'https://github.com/Mithali-gonchikar/MyMavenWebApp.git'
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/Mithali-gonchikar/MyMavenWebApp.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'echo "Deploy step here"'
+            }
         }
     }
 
-    stage('Build') {
-        steps {
-            sh 'mvn clean package'
+    post {
+        success {
+            echo 'Build and deployment successful!'
+        }
+        failure {
+            echo 'Build failed!'
         }
     }
-
-    stage('Archive') {
-        steps {
-            archiveArtifacts artifacts: 'target/*.war', fingerprint: true
-        }
-    }
-
-    stage('Deploy') {
-        steps {
-            sh 'echo "Deploy step here"'
-        }
-    }
-}
-
-post {
-    success {
-        echo 'Build and deployment successful!'
-    }
-    failure {
-        echo 'Build failed!'
-    }
-}
-```
-
 }
